@@ -1,0 +1,32 @@
+name: CI
+on:
+  pull_request:
+jobs:
+  lint-test-build-android:
+    name: Lint And Analyse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: 'Install Tools'
+        run: |
+            ./.github/workflows/scripts/install-tools.sh
+
+      - name: 'Bootstrap Workspace'
+        run: melos bootstrap
+
+      - name: Get Dependencies
+        run: melos run get
+
+      - name: Run build_runner
+        run: melos run generate
+
+      - name: Lint
+        run: melos run analyze
+
+#      - name: Unit tests
+#        run: melos run test-golden
