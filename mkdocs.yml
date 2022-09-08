@@ -1,0 +1,49 @@
+site_name: Flutter Errors
+site_description: "Flutter Errors - Automated Exceptions handler for Flutter development."
+repo_name: flutter-errors
+repo_url: https://github.com/faiyyazs/flutter-errors
+edit_uri: edit/main/docs/
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - toc:
+      permalink: true
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      primary: purple
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      primary: purple
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: Jetbrains Mono
+  icon:
+    repo: fontawesome/brands/github
+    logo: octicons/terminal-24
+  # favicon: img/favicon.png
+  features:
+    - navigation.tabs
+
+nav:
+  - Home:
+      - Welcome: index.md
+      - Feedback: feedback.md
+
+  - Documentation:
+      - Getting Started: getting-started.md
+      - Platform Support: platform-support.md
+      - Changelog: changelog.md

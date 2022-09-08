@@ -1,4 +1,4 @@
-import 'exception_mappers_storage.dart';
+import 'exception_mappers.dart';
 
 class ConditionPair {
   final bool Function(Exception element) condition;
