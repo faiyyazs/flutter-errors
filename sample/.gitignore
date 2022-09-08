@@ -8,15 +8,13 @@
 .buildlog/
 .history
 .svn/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
-
-# Add idea runconfigurations to git
 .idea/
-
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -47,17 +45,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/android/.idea/
-
-
-# Pub
-/coverage
-/debug-info
-
-# failure output
-**/failures/*.png
-
-
-# Omit committing pubspec.lock for library packages; see
-# https://dart.dev/guides/libraries/private-files#pubspeclock.
-pubspec.lock
