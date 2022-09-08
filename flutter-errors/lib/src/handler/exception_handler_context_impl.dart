@@ -8,7 +8,7 @@ import 'exception_mapper/exception_mapper.dart';
 
 typedef Catcher = bool Function(Exception element);
 
-class ExceptionHandlerContextImpl<T, R> implements ExceptionHandlerContext<R> {
+class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
   ExceptionHandlerContextImpl({
     required this.exceptionMapper,
     required this.eventsDispatcher,
@@ -24,7 +24,7 @@ class ExceptionHandlerContextImpl<T, R> implements ExceptionHandlerContext<R> {
   final EventsDispatcher<ErrorEventListener<T>> eventsDispatcher;
 
   @override
-  ExceptionHandlerContext<R> catchIt<E extends Exception>({
+  ExceptionHandlerContext<R> condition<E extends Exception>({
     required bool Function(Exception element) condition,
     required bool Function(E element) catcher,
   }) {

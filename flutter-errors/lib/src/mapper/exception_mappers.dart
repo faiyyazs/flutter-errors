@@ -7,14 +7,14 @@ import 'fallback_value_not_found_exception.dart';
 
 typedef ThrowableMapper = Function(Exception);
 
-class ExceptionMappersStorage {
+class ExceptionMappers {
   final Map<Type, dynamic> _fallbackValuesMap = {String: ""};
 
   final Map<Type, Map<Type, ThrowableMapper>> _mappersMap = {};
   final Map<Type, List<ConditionPair>> _conditionMappers = {};
 
   /// Register simple mapper (E) -> T.
-  ExceptionMappersStorage _register<T, E extends Exception>(
+  ExceptionMappers _registerExceptionAndResult<T, E extends Exception>(
     Type resultClass,
     Type exceptionClass,
     T Function(Exception) mapper,
@@ -28,7 +28,7 @@ class ExceptionMappersStorage {
   }
 
   /// Register mapper (E) -> T with condition (Throwable) -> Boolean.
-  ExceptionMappersStorage _registerCondition<T>(
+  ExceptionMappers _registerCondition<T>(
       Type resultClass, ConditionPair conditionPair) {
     if (!_conditionMappers.containsKey(T)) {
       _conditionMappers[resultClass] = [];
@@ -38,13 +38,13 @@ class ExceptionMappersStorage {
   }
 
   /// Register simple mapper (E) -> T.
-  ExceptionMappersStorage registerSimpleMapper<E extends Exception, T>(
+  ExceptionMappers register<E extends Exception, T>(
       T Function(Exception) mapper) {
-    return _register<T, E>(T, E, mapper);
+    return _registerExceptionAndResult<T, E>(T, E, mapper);
   }
 
   /// Registers mapper (Exception) -> T with specific condition (Exception) -> Boolean.
-  ExceptionMappersStorage registerConditionAndMapper<T>(
+  ExceptionMappers condition<T>(
       bool Function(Exception e) condition, T Function(Exception e) mapper) {
     return _registerCondition(T, ConditionPair(condition, mapper));
   }
@@ -89,13 +89,13 @@ class ExceptionMappersStorage {
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMappersStorage _setFallbackValue<T>(Type clazz, T value) {
+  ExceptionMappers _setFallbackValue<T>(Type clazz, T value) {
     _fallbackValuesMap[clazz] = value;
     return this;
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMappersStorage setDefaultFallBackValue<T>(T value) {
+  ExceptionMappers setFallBackValue<T>(T value) {
     return _setFallbackValue(T.runtimeType, value);
   }
 
@@ -111,7 +111,7 @@ class ExceptionMappersStorage {
   /// Returns fallback (default) value for [T] errors type.
   /// If there is no default value for the class [T], then [FallbackValueNotFoundException]
   /// exception will be thrown.
-  T getDefaultFallbackValue<T>() => _getFallbackValue(T.runtimeType);
+  T getFallbackValue<T>() => _getFallbackValue(T.runtimeType);
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
@@ -125,7 +125,7 @@ class ExceptionMappersStorage {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function(Exception) defaultThrowableMapper<E extends Exception, T>() {
+  T Function(Exception) throwableMapper<E extends Exception, T>() {
     return _throwableMapper(String);
   }
 }
