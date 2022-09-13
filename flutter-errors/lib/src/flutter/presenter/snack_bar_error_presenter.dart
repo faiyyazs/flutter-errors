@@ -1,6 +1,6 @@
 import '../../../flutter_errors.dart';
 
-abstract class SnackBarErrorPresenter implements FlutterErrorPresenter<String> {
+abstract class SnackBarErrorPresenter<T> implements FlutterErrorPresenter<T> {
   final SnackBarDuration duration;
 
   SnackBarErrorPresenter({this.duration = SnackBarDuration.short});
