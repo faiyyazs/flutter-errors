@@ -3,7 +3,7 @@ Automated Exceptions handler for Flutter development.
 
 # Welcome to Flutter errors
 
-**See the [project's website](https://faiyyazs.github.io/flutter-error/) for the full documentation.**
+**See the [project's website](https://faiyyazs.github.io/flutter-errors/) for the full documentation.**
 
 Flutter Errors provides a neat way to handle exceptions for your flutter applications inspired by the [Moko errors library](https://github.com/icerockdev/moko-errors).
 It comes with automatic mapping between globally registered exceptions and exceptions raised while performing some actions or use cases.
