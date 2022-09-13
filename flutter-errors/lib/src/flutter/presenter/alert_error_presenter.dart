@@ -1,6 +1,6 @@
 import '../../../flutter_errors.dart';
 
-abstract class AlertErrorPresenter implements FlutterErrorPresenter<String> {
+abstract class AlertErrorPresenter<T> implements FlutterErrorPresenter<T> {
   final String alertTitle;
   final String positiveButtonText;
 
