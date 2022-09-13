@@ -15,6 +15,5 @@ This library provides automatic exception handling and automatic error displayin
 The library is open to contributions!
 Refer to [GitHub Discussions](https://github.com/faiyyazs/flutter-errors/discussions) for questions, ideas, and discussions.
 
-[![pub package](https://img.shields.io/pub/v/flutter-errors.svg)](https://pub.dartlang.org/packages/flutter-errors)
-[![build status](https://github.com/faiyyaz/flutter-errors/workflows/Continuous%20integration/badge.svg)](https://github.com/faiyyazs/flutter-errors/actions)
+[![pub package](https://img.shields.io/pub/v/flutter-errors.svg)](https://pub.dartlang.org/packages/flutter-errors) [![build status](https://github.com/faiyyazs/flutter-errors/actions/workflows/ci.yml/badge.svg)](https://github.com/faiyyazs/flutter-errors/actions/workflows/ci.yml)
 
