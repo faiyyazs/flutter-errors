@@ -9,13 +9,14 @@ class FlutterEventsDispatcher<Listener> extends EventsDispatcher<Listener> {
 
   FlutterEventsDispatcher();
 
-  constructor() {}
-
-  bind(FlutterWidgetBindingObserver bindingObserver, Listener listener) {
+  void bind(FlutterWidgetBindingObserver bindingObserver, Listener listener) {
     bindingObserver.state().listen((event) {
       switch (event) {
-        case PageState.onInActive:
+        case PageState.attached:
           eventsListener = listener;
+          break;
+
+        case PageState.onInActive:
           break;
 
         case PageState.onResume:
@@ -39,6 +40,7 @@ class FlutterEventsDispatcher<Listener> extends EventsDispatcher<Listener> {
   @override
   void dispatchEvent(void Function(Listener listener) block) {
     var eListener = eventsListener;
+    print("eListener $eListener");
     if (eListener != null) {
       block(eListener);
     } else {

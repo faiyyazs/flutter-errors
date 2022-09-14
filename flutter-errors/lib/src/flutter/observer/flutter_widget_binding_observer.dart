@@ -1,29 +1,33 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
+import 'package:rxdart/subjects.dart';
 
 abstract class FlutterWidgetBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state);
+
   Stream<PageState> state();
+
+  PageState getTargetState();
 }
 
 class FlutterWidgetBindingObserverImpl extends FlutterWidgetBindingObserver {
-  final StreamController<PageState> _stateController = StreamController();
-  AppLifecycleState _state = AppLifecycleState.inactive;
+  final BehaviorSubject<PageState> _subject =
+      BehaviorSubject.seeded(PageState.attached);
+  AppLifecycleState? _state;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print(" didChangeAppLifecycleState $state ");
     _state = state;
-    _stateController.add(_getTargetState());
+    _subject.add(getTargetState());
   }
 
   @override
   Stream<PageState> state() {
-    return _stateController.stream;
+    return _subject.stream;
   }
 
-  PageState _getTargetState() {
+  @override
+  PageState getTargetState() {
     switch (_state) {
       case AppLifecycleState.inactive:
         return PageState.onInActive;
@@ -33,8 +37,10 @@ class FlutterWidgetBindingObserverImpl extends FlutterWidgetBindingObserver {
         return PageState.onResume;
       case AppLifecycleState.detached:
         return PageState.onDestroy;
+      case null:
+        return PageState.attached;
     }
   }
 }
 
-enum PageState { onInActive, onResume, onPause, onDestroy }
+enum PageState { attached, onInActive, onResume, onPause, onDestroy }

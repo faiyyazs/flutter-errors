@@ -1,3 +1,3 @@
 abstract class EventsDispatcher<Listener> {
-  dispatchEvent(void Function(Listener listener) block);
+  void dispatchEvent(void Function(Listener listener) block);
 }

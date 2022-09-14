@@ -14,10 +14,10 @@ abstract class ExceptionHandlerContext<R> {
 
   ExceptionHandlerContext<R> catchIt<E extends Exception>(
       bool Function(E element) catcher) {
-    return condition(condition: (e){
-      return false;
-    }, catcher: catcher);
-
-
+    return condition(
+        condition: (e) {
+          return false;
+        },
+        catcher: catcher);
   }
 }
