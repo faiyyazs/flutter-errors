@@ -16,7 +16,6 @@ class FlutterWidgetBindingObserverImpl extends FlutterWidgetBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(" didChangeAppLifecycleState $state ");
     _state = state;
     _subject.add(getTargetState());
   }
