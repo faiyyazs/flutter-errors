@@ -1,5 +1,5 @@
 extension Ext on Object? {
-  ifNotNull(Function() action) {
+  dynamic ifNotNull(Function() action) {
     if (this != null) {
       action();
     }

@@ -8,7 +8,7 @@ import 'fallback_value_not_found_exception.dart';
 typedef ThrowableMapper = Function(Exception);
 
 class ExceptionMappers {
-  final Map<Type, dynamic> _fallbackValuesMap = {String: ""};
+  final Map<Type, Object> _fallbackValuesMap = {String: ""};
 
   final Map<Type, Map<Type, ThrowableMapper>> _mappersMap = {};
   final Map<Type, List<ConditionPair>> _conditionMappers = {};
@@ -46,7 +46,7 @@ class ExceptionMappers {
   /// Registers mapper (Exception) -> T with specific condition (Exception) -> Boolean.
   ExceptionMappers condition<T>(
       bool Function(Exception e) condition, T Function(Exception e) mapper) {
-    return _registerCondition(T, ConditionPair(condition, mapper));
+    return _registerCondition<T>(T, ConditionPair(condition, mapper));
   }
 
   /// Tries to find mapper for [Exception] instance. First, a mapper with condition is
@@ -89,14 +89,14 @@ class ExceptionMappers {
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMappers _setFallbackValue<T>(Type clazz, T value) {
+  ExceptionMappers _setFallbackValue<T>(Type clazz, Object value) {
     _fallbackValuesMap[clazz] = value;
     return this;
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMappers setFallBackValue<T>(T value) {
-    return _setFallbackValue(T.runtimeType, value);
+  ExceptionMappers setFallBackValue<T extends Object>(T value) {
+    return _setFallbackValue<T>(T.runtimeType, value);
   }
 
   /// Returns fallback (default) value for [T] errors type.
@@ -115,10 +115,11 @@ class ExceptionMappers {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function(Exception) _throwableMapper<E extends Exception, T>(Type clazz) {
-    var fallback = _getFallbackValue(clazz);
+  T Function(E) _throwableMapper<E extends Exception, T>(Type clazz) {
+    T fallback = _getFallbackValue(clazz);
     return (e) =>
-        _find(resultClass: clazz, exception: e, exceptionClass: e.runtimeType)
+        _find<E, T>(
+                resultClass: clazz, exception: e, exceptionClass: e.runtimeType)
             ?.call(e) ??
         fallback;
   }
