@@ -42,7 +42,8 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
   Future<HandlerResult<R, Exception>> execute() async {
     try {
       return HandlerResult.success(
-          data: (R == Future) ? await (block() as Future) : block.call());
+        data: (R == Future) ? await (block() as Future<R>) : block.call(),
+      );
     } catch (e) {
       // Don't handle coroutines CancellationException
       //if (e is CancellationException) throw e
