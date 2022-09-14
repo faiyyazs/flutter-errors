@@ -2,7 +2,7 @@ name: CI
 on:
   pull_request:
 jobs:
-  lint-test-build-android:
+  lint-test-build:
     name: Lint And Analyse
     runs-on: ubuntu-latest
     steps:
@@ -14,13 +14,10 @@ jobs:
 
       - name: 'Install Tools'
         run: |
-            ./.github/workflows/scripts/install-tools.sh
+          ./.github/workflows/scripts/install-tools.sh
 
       - name: 'Bootstrap Workspace'
         run: melos bootstrap
-
-      - name: clean-all
-        run: melos run clean-all
 
       - name: Get Dependencies
         run: melos run get

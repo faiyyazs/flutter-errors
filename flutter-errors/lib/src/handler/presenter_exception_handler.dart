@@ -8,7 +8,7 @@ import '../presenter/error_presenter.dart';
 import 'exception_handler_binder.dart';
 import 'exception_mapper/exception_mapper.dart';
 
-class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl
+class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl<T>
     implements ExceptionHandler {
   final ExceptionMapper<T> exceptionMapper;
   void Function(Exception element)? onCatch;

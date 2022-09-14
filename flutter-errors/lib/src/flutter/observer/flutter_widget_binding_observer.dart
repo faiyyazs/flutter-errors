@@ -1,7 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
-
+import 'package:rxdart/subjects.dart';
 
 abstract class FlutterWidgetBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state);
@@ -12,8 +10,8 @@ abstract class FlutterWidgetBindingObserver {
 }
 
 class FlutterWidgetBindingObserverImpl extends FlutterWidgetBindingObserver {
-  final StreamController<PageState> _subject =
-  StreamController();
+  final BehaviorSubject<PageState> _subject =
+      BehaviorSubject.seeded(PageState.attached);
   AppLifecycleState? _state;
 
   @override

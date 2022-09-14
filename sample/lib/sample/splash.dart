@@ -16,6 +16,7 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
           ExceptionMappers()
               .register<FormatException, String>(
                   (e) => "Format Exception registered error")
+              .setFallBackValue<int>(250)
               .throwableMapper(),
           FlutterToastErrorPresenter(),
           FlutterEventsDispatcher(),
