@@ -14,8 +14,11 @@ class FlutterEventsDispatcher<Listener> extends EventsDispatcher<Listener> {
   bind(FlutterWidgetBindingObserver bindingObserver, Listener listener) {
     bindingObserver.state().listen((event) {
       switch (event) {
-        case PageState.onInActive:
+        case PageState.attached:
           eventsListener = listener;
+          break;
+
+        case PageState.onInActive:
           break;
 
         case PageState.onResume:
