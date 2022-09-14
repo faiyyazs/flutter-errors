@@ -65,34 +65,37 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     );
   }
 
+  void testFuture() {
+    exceptionHandler.handle<Future>(block: () async {
+      await Future.delayed(
+        const Duration(seconds: 2),
+        () => throw const FormatException("sad"),
+      );
+    }).execute();
+  }
+
   void test() {
     exceptionHandler.handle(block: () {
-      debugPrint("exceptionHandlerBinder start");
-      // throw const FormatException("Something is wrong");
       throw const FormatException("Format Exception");
-      /*var name = await Future.delayed(
-        const Duration(seconds: 2),
-        () => //"my name",
-            throw const FormatException("sad"),
-      );*/
-      //print("name >> $name");
     }).execute();
+  }
 
-/*
-    exceptionHandlerBinder.handle(block: () {
+  void testFinally() {
+    exceptionHandler.handle(block: () {
       // serverRequest(); // Some dangerous code that can throw an exception
     }).finallyIt(block: () {
       // Optional finally block
       // Some code
     }).execute();
-*/
+  }
 
-    /* exceptionHandlerBinder.handle(block: () {
+  void testCatch() {
+    exceptionHandler.handle(block: () {
       // serverRequest(); // Some dangerous code that can throw an exception
     }).catchIt<FormatException>((e) {
       // Optional finally block
       // Some code
       return false;
-    }).execute();*/
+    }).execute();
   }
 }
