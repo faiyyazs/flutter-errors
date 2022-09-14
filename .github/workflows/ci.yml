@@ -19,11 +19,11 @@ jobs:
       - name: 'Bootstrap Workspace'
         run: melos bootstrap
 
-      - name: Get Dependencies
-        run: melos run get
-
       - name: clean-all
         run: melos run clean-all
+
+      - name: Get Dependencies
+        run: melos run get
 
       - name: Run build_runner
         run: melos run generate
