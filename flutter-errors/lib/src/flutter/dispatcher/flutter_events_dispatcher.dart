@@ -40,7 +40,6 @@ class FlutterEventsDispatcher<Listener> extends EventsDispatcher<Listener> {
   @override
   void dispatchEvent(void Function(Listener listener) block) {
     var eListener = eventsListener;
-    print("eListener $eListener");
     if (eListener != null) {
       block(eListener);
     } else {
