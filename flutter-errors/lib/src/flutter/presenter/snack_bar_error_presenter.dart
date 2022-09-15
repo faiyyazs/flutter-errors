@@ -6,4 +6,4 @@ abstract class SnackBarErrorPresenter<T> implements FlutterErrorPresenter<T> {
   SnackBarErrorPresenter({this.duration = SnackBarDuration.short});
 }
 
-enum SnackBarDuration { indefinite, short, long }
+enum SnackBarDuration { short, long }
