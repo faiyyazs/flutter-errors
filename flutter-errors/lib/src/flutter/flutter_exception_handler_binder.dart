@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import '../error_event_listener.dart';
 import '../handler/exception_mapper/exception_mapper.dart';
 import '../handler/presenter_exception_handler.dart';
@@ -10,7 +12,7 @@ abstract class FlutterExceptionHandlerBinder<T>
   FlutterExceptionHandlerBinder(super.exceptionMapper, super.errorPresenters,
       super.errorEventsDispatcher, super.onCatch);
 
-  void bind(FlutterWidgetBindingObserver lifecycleOwner);
+  void bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner);
 }
 
 class FlutterExceptionHandlerBinderImpl<T>
@@ -27,20 +29,20 @@ class FlutterExceptionHandlerBinderImpl<T>
             onCatch);
 
   @override
-  bind(FlutterWidgetBindingObserver lifecycleOwner) {
+  bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner) {
     flutterEventsDispatcher.bind(
-        lifecycleOwner, EventsListener(lifecycleOwner, flutterErrorPresenter));
+        lifecycleOwner, EventsListener(context, flutterErrorPresenter));
   }
 }
 
 class EventsListener<T> implements ErrorEventListener<T> {
-  final FlutterWidgetBindingObserver _bindingObserver;
+  final BuildContext _context;
   final FlutterErrorPresenter<T> errorPresenter;
 
-  EventsListener(this._bindingObserver, this.errorPresenter);
+  EventsListener(this._context, this.errorPresenter);
 
   @override
   void showError(Exception throwable, T data) {
-    errorPresenter.show(throwable, _bindingObserver, data);
+    errorPresenter.show(throwable, _context, data);
   }
 }
