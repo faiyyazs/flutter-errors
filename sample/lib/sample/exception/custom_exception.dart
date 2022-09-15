@@ -1,0 +1,3 @@
+class CustomException implements Exception{
+
+}
