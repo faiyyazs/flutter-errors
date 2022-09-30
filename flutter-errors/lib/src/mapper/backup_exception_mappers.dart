@@ -89,7 +89,7 @@ class ExceptionMappers {
 
     */
 /*var mapper = (_conditionMappers[resultClass]
-        ?.firstWhereOrNull((element) => element.condition(exception)))?.mapper;*//*
+        ?.firstWhereOrNull((element) => element.condition(exception)))?.mapper;*/ /*
 
 
     print("mapper $mapper");

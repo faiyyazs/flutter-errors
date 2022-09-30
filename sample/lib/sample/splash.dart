@@ -5,7 +5,6 @@ import 'package:sample/sample/exception/no_network_exception.dart';
 
 import 'error_presenter/flutter_alert_presenter.dart';
 import 'error_presenter/flutter_toast_presenter.dart';
-import 'exception/alert_texts.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -16,29 +15,8 @@ class Splash extends StatefulWidget {
           exceptionMapperStorage: ExceptionMapperStorage.instance
               .register<FormatException, String>(
                   (e) => "Format Exception registered error")
-              .register<NoNetworkException, AlertTexts>(
-                  (e) => AlertTexts(message: "asdasd",title: "asda"))
-              .condition<AlertTexts>(
-                (e) {
-                  return (e is NoNetworkException);
-                },
-                (Exception e) {
-                  print("e as NoNetworkException");
-                    /*return (e as NoNetworkException)
-                      .mapThrowable();*/
-                  return AlertTexts(
-                      title: "Network Error",  message: (e as NoNetworkException)
-                      .mapThrowable());
-
-                  /*return AlertTexts(
-                      title: "Network Error",
-                      message: (e as NoNetworkException)
-                          .mapThrowable()); //${e.mapThrowable<Exception, AlertTexts>()} "); //${(e as NoNetworkException).mapThrowable()}");*/
-                },
-              )
-              .setFallBackValue<AlertTexts>(
-                  AlertTexts(title: "title", message: "fallback message"))
-              .setFallBackValue<int>(250)
+              .register<NoNetworkException, String>(
+                  (e) => "No internet connection")
               .throwableMapper(),
           flutterErrorPresenter: SelectorErrorPresenter((e) {
             switch (e.runtimeType) {

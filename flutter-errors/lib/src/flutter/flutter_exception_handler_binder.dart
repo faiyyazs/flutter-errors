@@ -17,7 +17,7 @@ abstract class FlutterExceptionHandlerBinder<T extends String>
 
 class FlutterExceptionHandlerBinderImpl<T extends String>
     extends FlutterExceptionHandlerBinder<T> {
-  final FlutterErrorPresenter  flutterErrorPresenter;
+  final FlutterErrorPresenter flutterErrorPresenter;
   final ExceptionMapper<T> exceptionMapperStorage;
   final FlutterEventsDispatcher<ErrorEventListener<T>> flutterEventsDispatcher;
 
@@ -27,8 +27,8 @@ class FlutterExceptionHandlerBinderImpl<T extends String>
     required this.flutterErrorPresenter,
     required this.flutterEventsDispatcher,
     void Function(Exception element)? onCatch,
-  }) : super(exceptionMapperStorage, flutterErrorPresenter, flutterEventsDispatcher,
-            onCatch);
+  }) : super(exceptionMapperStorage, flutterErrorPresenter,
+            flutterEventsDispatcher, onCatch);
 
   @override
   bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner) {

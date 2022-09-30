@@ -15,8 +15,7 @@ class ExceptionMapperStorage {
   static ExceptionMapperStorage get instance => _instance;
 
   final Map<dynamic, dynamic> _fallbackValuesMap = {
-    String: "String Unknown error",
-    Object: "OBject Error runtime",
+    String: "Unknown Error",
   };
 
   final Map<Object, Map<Type, ThrowableMapper>> _mappersMap = {};
@@ -33,7 +32,6 @@ class ExceptionMapperStorage {
       _mappersMap[resultClass] = {};
     }
     _mappersMap[resultClass]?.putIfAbsent(exceptionClass, () => mapper);
-    print("_mappersMap>>>  ${_mappersMap.toString()} ");
     return this;
   }
 
@@ -44,7 +42,6 @@ class ExceptionMapperStorage {
       _conditionMappers[resultClass] = [];
     }
     _conditionMappers[resultClass]?.add(conditionPair);
-    print("_conditionMappers>>>  ${_conditionMappers.toString()} ");
     return this;
   }
 
@@ -70,40 +67,20 @@ class ExceptionMapperStorage {
     required E exception,
     required Type exceptionClass,
   }) {
-    print(
-        "_find resultClass>$resultClass  exception>$exception exceptionClass>$exceptionClass");
-
-    print("_conditionMappers>>>  ${_conditionMappers.toString()} ");
-
     var condition = _conditionMappers.keys.firstWhereOrNull((element) {
-      print("element $element & resultClass $resultClass");
       return (resultClass == element);
     });
-    //resultClass = matchedelement;
-    print("Condition Matchedelement $condition");
-
     var mapper = _conditionMappers[condition]?.firstWhereOrNull((elements) {
-      print("elements condition pairs> ${elements.condition}");
       return elements.condition(exception);
     })?.mapper;
 
-    /*var mapper = (_conditionMappers[resultClass]
-        ?.firstWhereOrNull((element) => element.condition(exception)))?.mapper;*/
-
-    print("mapper $mapper");
-
     if (mapper == null) {
-      print("_mappersMap>>>  ${_mappersMap.toString()} ");
       var item = _mappersMap.keys.firstWhereOrNull((element) {
-        print("element $element & resultClass $resultClass");
         return (resultClass == element);
       });
-      print("Mapper matchedElement $item");
       Map<dynamic, ThrowableMapper>? resultOutput = _mappersMap[item];
-      print("_mappersMap[item] $resultOutput");
       mapper = resultOutput?[exceptionClass];
     }
-    print("Mapper result $mapper");
 
     if (mapper == null && (exception is! Exception)) {
       throw exception;
@@ -126,7 +103,6 @@ class ExceptionMapperStorage {
   /// Sets fallback (default) value for [T] errors type.
   ExceptionMapperStorage _setFallbackValue<T>(dynamic clazz, T value) {
     _fallbackValuesMap[clazz] = value;
-    print("_fallbackValuesMap updated ${_fallbackValuesMap.toString()}");
     return this;
   }
 
@@ -139,26 +115,14 @@ class ExceptionMapperStorage {
   /// If there is no default value for the class [T], then [FallbackValueNotFoundException]
   /// exception will be thrown.
   T _getFallbackValue<T>(Type clazz) {
-    //clazz = String;
-    print(
-        " looking ${clazz.runtimeType} FallbackValue in ${_fallbackValuesMap.keys.toString()}");
-
-    var element = _fallbackValuesMap.keys.firstWhereOrNull((element) {
-      print("clazz $clazz   element> $element");
-      //print("clazz.runtime ${clazz.runtimeType}  element.runtime> ${element.runtimeType}");
-      print(
-          "clazz.runtime ${clazz.runtimeType}  element> $element match? ${element == clazz.runtimeType}");
-      print("Object is $clazz is $element ${clazz == element}");
+    dynamic element =
+        _fallbackValuesMap.keys.firstWhereOrNull((dynamic element) {
       return element == clazz;
-      // return (clazz.runtimeType == element);
     });
 
     if (element != null) {
-      print(
-          "_getFallbackValue ${_fallbackValuesMap[element]} and found <T> $T ${clazz.runtimeType}");
       return _fallbackValuesMap[element] as T;
     } else {
-      print("_getFallbackValue not found $clazz");
       return throw FallbackValueNotFoundException(clazz.runtimeType);
     }
   }
@@ -172,10 +136,8 @@ class ExceptionMapperStorage {
   /// class [T].
   T Function<E extends Exception>(E)
       _throwableMapper<E extends Exception, T extends Object>() {
-    print("_throwableMapper>>>>>>>>>> $E $T");
     var fallback = _getFallbackValue<T>(T);
     return <E extends Exception>(E e) {
-      print("_throwableMapper dynamic $E $T");
       return _find<E, T>(
                   resultClass: T, exception: e, exceptionClass: e.runtimeType)
               ?.call(e) ??
@@ -185,14 +147,13 @@ class ExceptionMapperStorage {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function(E)
-      throwableMapper<E extends Exception, T extends Object>() {
-    print("throwableMapper of ");
+  T Function(E) throwableMapper<E extends Exception, T extends Object>() {
     return throwableMappers<E, T>();
   }
 }
 
-T Function<E extends Exception>(E) throwableMappers<E extends Exception, T extends Object>() {
+T Function<E extends Exception>(E)
+    throwableMappers<E extends Exception, T extends Object>() {
   return ExceptionMapperStorage.instance._throwableMapper<E, T>();
 }
 

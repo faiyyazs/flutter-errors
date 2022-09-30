@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:rxdart/subjects.dart';
 
 abstract class FlutterWidgetBindingObserver {
-
   void didChangeAppLifecycleState(AppLifecycleState state);
 
   Stream<PageState> state();
