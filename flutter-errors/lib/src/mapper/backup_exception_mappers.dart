@@ -1,18 +1,21 @@
 // ignore_for_file: unnecessary_type_check
 
+/*
 import 'package:collection/collection.dart';
 
 import 'condition_pair.dart';
 import 'fallback_value_not_found_exception.dart';
+*/
 
-typedef ThrowableMapper<T extends Object, E extends Exception> = T Function(E);
+typedef ThrowableMapper<E extends Exception, T> = T Function(Exception);
 
-class ExceptionMapperStorage {
-  ExceptionMapperStorage._();
+/*
+class ExceptionMappers {
+  ExceptionMappers._();
 
-  static final ExceptionMapperStorage _instance = ExceptionMapperStorage._();
+  static final ExceptionMappers _instance = ExceptionMappers._();
 
-  static ExceptionMapperStorage get instance => _instance;
+  static ExceptionMappers get instance => _instance;
 
   final Map<Object, dynamic> _fallbackValuesMap = {
     String: "String Unknown error",
@@ -22,7 +25,7 @@ class ExceptionMapperStorage {
   final Map<Type, List<ConditionPair>> _conditionMappers = {};
 
   /// Register simple mapper (E) -> T.
-  ExceptionMapperStorage
+  ExceptionMappers
       _registerExceptionAndResult<T extends Object, E extends Exception>(
     Type resultClass,
     Type exceptionClass,
@@ -37,7 +40,7 @@ class ExceptionMapperStorage {
   }
 
   /// Register mapper (E) -> T with condition (Throwable) -> Boolean.
-  ExceptionMapperStorage _registerCondition<T extends Object>(
+  ExceptionMappers _registerCondition<T>(
       Type resultClass, ConditionPair conditionPair) {
     if (!_conditionMappers.containsKey(T)) {
       _conditionMappers[resultClass] = [];
@@ -48,13 +51,13 @@ class ExceptionMapperStorage {
   }
 
   /// Register simple mapper (E) -> T.
-  ExceptionMapperStorage register<E extends Exception, T extends Object>(
+  ExceptionMappers register<E extends Exception, T extends Object>(
       T Function(Exception) mapper) {
     return _registerExceptionAndResult<T, E>(T, E, mapper);
   }
 
   /// Registers mapper (Exception) -> T with specific condition (Exception) -> Boolean.
-  ExceptionMapperStorage condition<T extends Object>(
+  ExceptionMappers condition<T>(
       bool Function(Exception e) condition, T Function(Exception e) mapper) {
     return _registerCondition<T>(T, ConditionPair(condition, mapper));
   }
@@ -70,22 +73,24 @@ class ExceptionMapperStorage {
     required Type exceptionClass,
   }) {
     print(
-        "_find resultClass>$resultClass  exception>$exception exceptionClass>$exceptionClass");
+        "_find resultClass>${resultClass}  exception>$exception exceptionClass>$exceptionClass");
 
     var condition = _conditionMappers.keys.singleWhereOrNull((element) {
-      print("element $element & resultClass $resultClass");
+      print("element $element & resultClass ${resultClass}");
       return (resultClass == element);
     });
     //resultClass = matchedelement;
-    print("Condition Matchedelement $condition");
+    print("Condition Matchedelement ${condition}");
 
     var mapper = _conditionMappers[condition]?.singleWhereOrNull((elements) {
       print("elements condition pairs> ${elements.condition}");
       return elements.condition(exception);
     })?.mapper;
 
-    /*var mapper = (_conditionMappers[resultClass]
-        ?.firstWhereOrNull((element) => element.condition(exception)))?.mapper;*/
+    */
+/*var mapper = (_conditionMappers[resultClass]
+        ?.firstWhereOrNull((element) => element.condition(exception)))?.mapper;*//*
+
 
     print("mapper $mapper");
 
@@ -94,12 +99,12 @@ class ExceptionMapperStorage {
         print("element $element & resultClass $resultClass");
         return (resultClass == element);
       });
-      print("Mapper matchedElement $item");
+      print("Mapper matchedElement ${item}");
       Map<dynamic, ThrowableMapper>? resultOutput = _mappersMap[item];
-      print("_mappersMap[item] $resultOutput");
+      print("_mappersMap[item] ${resultOutput}");
       mapper = resultOutput?[exceptionClass];
     }
-    print("Mapper result $mapper");
+    print("Mapper result ${mapper}");
 
     if (mapper == null && (exception is! Exception)) {
       throw exception;
@@ -120,14 +125,14 @@ class ExceptionMapperStorage {
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMapperStorage _setFallbackValue<T>(dynamic clazz, T value) {
+  ExceptionMappers _setFallbackValue<T>(dynamic clazz, T value) {
     _fallbackValuesMap[clazz] = value;
     print("_fallbackValuesMap updated ${_fallbackValuesMap.toString()}");
     return this;
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMapperStorage setFallBackValue<T>(T value) {
+  ExceptionMappers setFallBackValue<T>(T value) {
     return _setFallbackValue<T>(T, value);
   }
 
@@ -143,7 +148,7 @@ class ExceptionMapperStorage {
       print("clazz $clazz   element> $element");
       //print("clazz.runtime ${clazz.runtimeType}  element.runtime> ${element.runtimeType}");
       print(
-          "clazz.runtime ${clazz.runtimeType}  element> $element match? ${element == clazz.runtimeType}");
+          "clazz.runtime ${clazz.runtimeType}  element> ${element} match? ${element == clazz.runtimeType}");
       print("Object is $clazz is $element ${clazz == element}");
       return element == clazz;
       // return (clazz.runtimeType == element);
@@ -168,9 +173,9 @@ class ExceptionMapperStorage {
   /// class [T].
   T Function<E extends Exception>(E)
       _throwableMapper<E extends Exception, T>() {
-    print("_throwableMapper>>>>>>>>>> $E $T");
-    var fallback = _getFallbackValue(T);
+    print("_throwableMapper>>>>>>>>>> $E ${T}");
     return <E extends Exception>(E e) {
+      T fallback = _getFallbackValue(T);
       print("_throwableMapper dynamic $E $T");
       return _find<E, T>(
                   resultClass: T, exception: e, exceptionClass: e.runtimeType)
@@ -186,9 +191,11 @@ class ExceptionMapperStorage {
     return throwableMappers<E, T>();
   }
 }
+*/
 
+/*
 T Function<E extends Exception>(E) throwableMappers<E extends Exception, T>() {
-  return ExceptionMapperStorage.instance._throwableMapper<E, T>();
+  return ExceptionMappers.instance._throwableMapper<E, T>();
 }
 
 extension ExtException on Exception {
@@ -196,3 +203,4 @@ extension ExtException on Exception {
     return throwableMappers<E, T>()(this);
   }
 }
+*/

@@ -1,31 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_errors/flutter_errors.dart';
 import 'package:sample/sample/error_presenter/flutter_snack_bar_error_presenter.dart';
+import 'package:sample/sample/exception/no_network_exception.dart';
 
+import 'error_presenter/flutter_alert_presenter.dart';
 import 'error_presenter/flutter_toast_presenter.dart';
-import 'exception/custom_exception.dart';
+import 'exception/alert_texts.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SplashState(
-        FlutterExceptionHandlerBinderImpl<String>(
-            ExceptionMappers()
-                .register<FormatException, String>(
-                    (e) => "Format Exception registered error")
-                .register<CustomException, String>(
-                    (e) => "Custom Exception error")
-                .setFallBackValue<int>(250)
-                .setFallBackValue<String>("defaul string error")
-                .throwableMapper(), SelectorErrorPresenter((e) {
-          switch (e.runtimeType) {
-            case FormatException:
-              return FlutterSnackBarErrorPresenter();
-            default:
-              return FlutterToastErrorPresenter();
-          }
-        }), FlutterEventsDispatcher(), (Exception e) {}),
+        FlutterExceptionHandlerBinderImpl(
+          exceptionMapperStorage: ExceptionMapperStorage.instance
+              .register<FormatException, String>(
+                  (e) => "Format Exception registered error")
+              .condition<AlertTexts>(
+                (e) {
+                  return (e is NoNetworkException);
+                },
+                (Exception e) {
+                  print("e as NoNetworkException");
+                   return (e as NoNetworkException)
+                      .mapThrowable<Exception, AlertTexts>();
+                  /*return AlertTexts(
+                      title: "Network Error",
+                      message: (e as NoNetworkException)
+                          .mapThrowable()); //${e.mapThrowable<Exception, AlertTexts>()} "); //${(e as NoNetworkException).mapThrowable()}");*/
+                },
+              )
+              .setFallBackValue<AlertTexts>(
+                  AlertTexts(title: "title", message: "fallback message"))
+              .setFallBackValue<int>(250)
+              .setFallBackValue<dynamic>(dynamic)
+              .throwableMapper<Exception, dynamic>(),
+          flutterErrorPresenter: SelectorErrorPresenter((e) {
+            switch (e.runtimeType) {
+              case FormatException:
+                return FlutterSnackBarErrorPresenter();
+
+              case NoNetworkException:
+                return FlutterAlertErrorPresenter();
+
+              default:
+                return FlutterToastErrorPresenter();
+            }
+          }),
+          flutterEventsDispatcher: FlutterEventsDispatcher(),
+          onCatch: (Exception e) {
+            debugPrint("print stack trace ${e.toString()}");
+          },
+        ),
         FlutterWidgetBindingObserverImpl(),
       );
 }
@@ -104,7 +130,7 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     exceptionHandler.handle<Future>(block: () async {
       await Future.delayed(
         const Duration(seconds: 2),
-        () => throw CustomException(),
+        () => throw NoNetworkException("No internet"),
       );
     }).execute();
   }

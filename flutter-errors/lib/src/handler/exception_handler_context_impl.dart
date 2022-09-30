@@ -57,6 +57,8 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
         });
       }
       return HandlerResult.error(exception: e);
+    } finally {
+      finallyBlock?.call();
     }
   }
 
