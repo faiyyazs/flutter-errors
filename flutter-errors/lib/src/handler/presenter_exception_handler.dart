@@ -12,7 +12,7 @@ class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl<T>
     implements ExceptionHandler {
   final ExceptionMapper<T> exceptionMapper;
   void Function(Exception element)? onCatch;
-  final ErrorPresenter<T> errorPresenters;
+  final ErrorPresenter errorPresenters;
   final EventsDispatcher<ErrorEventListener<T>> errorEventsDispatcher;
 
   PresenterExceptionHandler(

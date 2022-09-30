@@ -16,14 +16,20 @@ class Splash extends StatefulWidget {
           exceptionMapperStorage: ExceptionMapperStorage.instance
               .register<FormatException, String>(
                   (e) => "Format Exception registered error")
+              .register<NoNetworkException, AlertTexts>(
+                  (e) => AlertTexts(message: "asdasd",title: "asda"))
               .condition<AlertTexts>(
                 (e) {
                   return (e is NoNetworkException);
                 },
                 (Exception e) {
                   print("e as NoNetworkException");
-                   return (e as NoNetworkException)
-                      .mapThrowable<Exception, AlertTexts>();
+                    /*return (e as NoNetworkException)
+                      .mapThrowable();*/
+                  return AlertTexts(
+                      title: "Network Error",  message: (e as NoNetworkException)
+                      .mapThrowable());
+
                   /*return AlertTexts(
                       title: "Network Error",
                       message: (e as NoNetworkException)
@@ -33,8 +39,7 @@ class Splash extends StatefulWidget {
               .setFallBackValue<AlertTexts>(
                   AlertTexts(title: "title", message: "fallback message"))
               .setFallBackValue<int>(250)
-              .setFallBackValue<dynamic>(dynamic)
-              .throwableMapper<Exception, dynamic>(),
+              .throwableMapper(),
           flutterErrorPresenter: SelectorErrorPresenter((e) {
             switch (e.runtimeType) {
               case FormatException:

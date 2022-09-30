@@ -14,17 +14,18 @@ class ExceptionMapperStorage {
 
   static ExceptionMapperStorage get instance => _instance;
 
-  final Map<Object, dynamic> _fallbackValuesMap = {
+  final Map<dynamic, dynamic> _fallbackValuesMap = {
     String: "String Unknown error",
+    Object: "OBject Error runtime",
   };
 
-  final Map<Type, Map<Type, ThrowableMapper>> _mappersMap = {};
-  final Map<Type, List<ConditionPair>> _conditionMappers = {};
+  final Map<Object, Map<Type, ThrowableMapper>> _mappersMap = {};
+  final Map<Object, List<ConditionPair>> _conditionMappers = {};
 
   /// Register simple mapper (E) -> T.
   ExceptionMapperStorage
       _registerExceptionAndResult<T extends Object, E extends Exception>(
-    Type resultClass,
+    Object resultClass,
     Type exceptionClass,
     T Function(Exception) mapper,
   ) {
@@ -32,13 +33,13 @@ class ExceptionMapperStorage {
       _mappersMap[resultClass] = {};
     }
     _mappersMap[resultClass]?.putIfAbsent(exceptionClass, () => mapper);
-
+    print("_mappersMap>>>  ${_mappersMap.toString()} ");
     return this;
   }
 
   /// Register mapper (E) -> T with condition (Throwable) -> Boolean.
   ExceptionMapperStorage _registerCondition<T extends Object>(
-      Type resultClass, ConditionPair conditionPair) {
+      Object resultClass, ConditionPair conditionPair) {
     if (!_conditionMappers.containsKey(T)) {
       _conditionMappers[resultClass] = [];
     }
@@ -65,21 +66,23 @@ class ExceptionMapperStorage {
   /// If there is no mapper for the [Exception] of class [E] and [E] does't inherits
   /// [Exception], then exception will be rethrown.
   T Function(E)? _find<E extends Exception, T>({
-    required Type resultClass,
+    required Object resultClass,
     required E exception,
     required Type exceptionClass,
   }) {
     print(
         "_find resultClass>$resultClass  exception>$exception exceptionClass>$exceptionClass");
 
-    var condition = _conditionMappers.keys.singleWhereOrNull((element) {
+    print("_conditionMappers>>>  ${_conditionMappers.toString()} ");
+
+    var condition = _conditionMappers.keys.firstWhereOrNull((element) {
       print("element $element & resultClass $resultClass");
       return (resultClass == element);
     });
     //resultClass = matchedelement;
     print("Condition Matchedelement $condition");
 
-    var mapper = _conditionMappers[condition]?.singleWhereOrNull((elements) {
+    var mapper = _conditionMappers[condition]?.firstWhereOrNull((elements) {
       print("elements condition pairs> ${elements.condition}");
       return elements.condition(exception);
     })?.mapper;
@@ -90,7 +93,8 @@ class ExceptionMapperStorage {
     print("mapper $mapper");
 
     if (mapper == null) {
-      var item = _mappersMap.keys.singleWhereOrNull((element) {
+      print("_mappersMap>>>  ${_mappersMap.toString()} ");
+      var item = _mappersMap.keys.firstWhereOrNull((element) {
         print("element $element & resultClass $resultClass");
         return (resultClass == element);
       });
@@ -134,12 +138,12 @@ class ExceptionMapperStorage {
   /// Returns fallback (default) value for [T] errors type.
   /// If there is no default value for the class [T], then [FallbackValueNotFoundException]
   /// exception will be thrown.
-  T _getFallbackValue<T>(Object clazz) {
-    //clazz = int;
+  T _getFallbackValue<T>(Type clazz) {
+    //clazz = String;
     print(
         " looking ${clazz.runtimeType} FallbackValue in ${_fallbackValuesMap.keys.toString()}");
 
-    var element = _fallbackValuesMap.keys.singleWhereOrNull((element) {
+    var element = _fallbackValuesMap.keys.firstWhereOrNull((element) {
       print("clazz $clazz   element> $element");
       //print("clazz.runtime ${clazz.runtimeType}  element.runtime> ${element.runtimeType}");
       print(
@@ -167,9 +171,9 @@ class ExceptionMapperStorage {
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
   T Function<E extends Exception>(E)
-      _throwableMapper<E extends Exception, T>() {
+      _throwableMapper<E extends Exception, T extends Object>() {
     print("_throwableMapper>>>>>>>>>> $E $T");
-    var fallback = _getFallbackValue(T);
+    var fallback = _getFallbackValue<T>(T);
     return <E extends Exception>(E e) {
       print("_throwableMapper dynamic $E $T");
       return _find<E, T>(
@@ -181,18 +185,19 @@ class ExceptionMapperStorage {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function<E extends Exception>(E) throwableMapper<E extends Exception, T>() {
+  T Function(E)
+      throwableMapper<E extends Exception, T extends Object>() {
     print("throwableMapper of ");
     return throwableMappers<E, T>();
   }
 }
 
-T Function<E extends Exception>(E) throwableMappers<E extends Exception, T>() {
+T Function<E extends Exception>(E) throwableMappers<E extends Exception, T extends Object>() {
   return ExceptionMapperStorage.instance._throwableMapper<E, T>();
 }
 
 extension ExtException on Exception {
-  T mapThrowable<E extends Exception, T>() {
+  T mapThrowable<E extends Exception, T extends Object>() {
     return throwableMappers<E, T>()(this);
   }
 }

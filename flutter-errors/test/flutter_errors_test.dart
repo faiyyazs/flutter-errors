@@ -287,8 +287,8 @@ void main() {
       message: '',
     );
     print("object is String ${object.runtimeType == String}");
-    print("object is String ${object.runtimeType == int}");
-    print("object is String ${object.runtimeType == AlertInformation}");
+    print("object is int ${object.runtimeType == int}");
+    print("object is AlertInformation ${object.runtimeType == AlertInformation}");
   });
 
   test('dynamic Checks', () {
