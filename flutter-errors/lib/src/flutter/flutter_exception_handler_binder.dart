@@ -7,7 +7,7 @@ import 'dispatcher/flutter_events_dispatcher.dart';
 import 'observer/flutter_widget_binding_observer.dart';
 import 'presenter/flutter_error_presenter.dart';
 
-abstract class FlutterExceptionHandlerBinder<T extends String>
+abstract class FlutterExceptionHandlerBinder<T extends Object>
     extends PresenterExceptionHandler<T> {
   FlutterExceptionHandlerBinder(super.exceptionMapper, super.errorPresenters,
       super.errorEventsDispatcher, super.onCatch);
@@ -15,10 +15,10 @@ abstract class FlutterExceptionHandlerBinder<T extends String>
   void bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner);
 }
 
-class FlutterExceptionHandlerBinderImpl<T extends String>
+class FlutterExceptionHandlerBinderImpl<T extends Object>
     extends FlutterExceptionHandlerBinder<T> {
   final FlutterErrorPresenter flutterErrorPresenter;
-  final ExceptionMapper<T> exceptionMapperStorage;
+  final ExceptionMapper exceptionMapperStorage;
   final FlutterEventsDispatcher<ErrorEventListener<T>> flutterEventsDispatcher;
 
   /// [onCatch] Here we can log all exceptions that are handled by ExceptionHandler
@@ -37,7 +37,7 @@ class FlutterExceptionHandlerBinderImpl<T extends String>
   }
 }
 
-class EventsListener<T> implements ErrorEventListener<T> {
+class EventsListener<T extends Object> implements ErrorEventListener<T> {
   final BuildContext _context;
   final FlutterErrorPresenter errorPresenter;
 
@@ -46,5 +46,10 @@ class EventsListener<T> implements ErrorEventListener<T> {
   @override
   void showError(Exception throwable, T data) {
     errorPresenter.show(throwable, _context, data);
+  }
+
+  @override
+  FlutterErrorPresenter resolvePresenter(Exception throwable) {
+    return errorPresenter.resolvePresenter(throwable);
   }
 }

@@ -134,12 +134,14 @@ class ExceptionMapperStorage {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function<E extends Exception>(E)
-      _throwableMapper<E extends Exception, T extends Object>() {
-    var fallback = _getFallbackValue<T>(T);
-    return <E extends Exception>(E e) {
+  T Function<E extends Exception>(E, Type)
+      _throwableMapper<E extends Exception, T>() {
+    return <E extends Exception>(E e, Type clazz) {
+      var fallback = _getFallbackValue<T>(clazz);
       return _find<E, T>(
-                  resultClass: T, exception: e, exceptionClass: e.runtimeType)
+                  resultClass: clazz,
+                  exception: e,
+                  exceptionClass: e.runtimeType)
               ?.call(e) ??
           fallback;
     };
@@ -147,18 +149,18 @@ class ExceptionMapperStorage {
 
   /// Factory method that creates mappers (Throwable) -> T with a registered fallback value for
   /// class [T].
-  T Function(E) throwableMapper<E extends Exception, T extends Object>() {
+  T Function(E, Type) throwableMapper<E extends Exception, T>() {
     return throwableMappers<E, T>();
   }
 }
 
-T Function<E extends Exception>(E)
-    throwableMappers<E extends Exception, T extends Object>() {
+T Function<E extends Exception>(E, Type)
+    throwableMappers<E extends Exception, T>() {
   return ExceptionMapperStorage.instance._throwableMapper<E, T>();
 }
 
 extension ExtException on Exception {
-  T mapThrowable<E extends Exception, T extends Object>() {
-    return throwableMappers<E, T>()(this);
+  T mapThrowable<E extends Exception, T>() {
+    return throwableMappers<E, T>()(this, T);
   }
 }

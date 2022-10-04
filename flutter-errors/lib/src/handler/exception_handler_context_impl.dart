@@ -17,7 +17,7 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
   });
 
   final _catchers = <MapEntry<bool Function(Exception), Catcher>>[];
-  final ExceptionMapper<T> exceptionMapper;
+  final ExceptionMapper exceptionMapper;
   void Function(Exception element)? onCatch;
   void Function()? finallyBlock;
   final R Function() block;
@@ -51,9 +51,11 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
       bool isHandled = _isHandledByCustomCatcher(e as Exception);
       if (!isHandled) {
         // If not handled by a custom catcher
-        var errorValue = exceptionMapper(e);
+
         eventsDispatcher.dispatchEvent((listener) {
-          listener.showError(e, errorValue);
+          var data =
+              exceptionMapper(e, listener.resolvePresenter(e).resolveType());
+          listener.showError(e, data);
         });
       }
       return HandlerResult.error(exception: e);

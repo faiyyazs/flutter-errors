@@ -5,6 +5,7 @@ import 'package:sample/sample/exception/no_network_exception.dart';
 
 import 'error_presenter/flutter_alert_presenter.dart';
 import 'error_presenter/flutter_toast_presenter.dart';
+import 'exception/alert_texts.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -17,17 +18,20 @@ class Splash extends StatefulWidget {
                   (e) => "Format Exception registered error")
               .register<NoNetworkException, String>(
                   (e) => "No internet connection")
+              .setFallBackValue<AlertTexts>(
+                AlertTexts(title: "yo yo", message: "yo mesage"),
+              )
               .throwableMapper(),
           flutterErrorPresenter: SelectorErrorPresenter((e) {
             switch (e.runtimeType) {
               case FormatException:
-                return FlutterSnackBarErrorPresenter();
+                return FlutterToastErrorPresenter();
 
               case NoNetworkException:
                 return FlutterAlertErrorPresenter();
 
               default:
-                return FlutterToastErrorPresenter();
+                return FlutterSnackBarErrorPresenter();
             }
           }),
           flutterEventsDispatcher: FlutterEventsDispatcher(),

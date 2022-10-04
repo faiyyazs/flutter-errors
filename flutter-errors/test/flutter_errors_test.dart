@@ -63,7 +63,9 @@ void main() {
           alertInformation);
     });
 
-    test('Negative Registered condition & fallback Condition exception & message', () {
+    test(
+        'Negative Registered condition & fallback Condition exception & message',
+        () {
       final exceptionMapper = ExceptionMapperStorage.instance;
       FlutterCustomException exception = FlutterCustomException(1);
       var alertInformation = AlertInformation(
@@ -82,23 +84,24 @@ void main() {
       expect(
           exceptionMapper
               .throwableMapper<Exception, AlertInformation>()
-              .call(exception),
+              .call(exception, AlertInformation),
           alertFallBack);
     });
 
-
-    test('Positive Registered condition & fallback Condition exception & message', () {
+    test(
+        'Positive Registered condition & fallback Condition exception & message',
+        () {
       final exceptionMapper = ExceptionMapperStorage.instance;
       FlutterCustomException exception = FlutterCustomException(1);
       var alertInformation = AlertInformation(
           title: "Alert Information Error", message: "${exception.code}");
       var alertFallBack =
-      AlertInformation(title: "AIE fallBack", message: "fallBack");
+          AlertInformation(title: "AIE fallBack", message: "fallBack");
       exceptionMapper.condition<AlertInformation>(
-            (e) {
+        (e) {
           return (e is FlutterCustomException) && (e.code == 1);
         },
-            (Exception e) {
+        (Exception e) {
           return alertInformation;
         },
       ).setFallBackValue<AlertInformation>(alertFallBack);
@@ -106,7 +109,7 @@ void main() {
       expect(
           exceptionMapper
               .throwableMapper<Exception, AlertInformation>()
-              .call(exception),
+              .call(exception, AlertInformation),
           alertInformation);
     });
 
@@ -135,7 +138,7 @@ void main() {
       expect(
           exceptionMapper
               .throwableMapper<Exception, String>()
-              .call(formatException),
+              .call(formatException, String),
           stringFallBack);
     });
 
@@ -162,12 +165,12 @@ void main() {
           .setFallBackValue(stringFallBack);
 
       print(
-          " my custome message ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(exception).message}");
+          " my custome message ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(exception, AlertInformation).message}");
 
       expect(
           exceptionMapper
               .throwableMapper<Exception, AlertInformation>()
-              .call(exception),
+              .call(exception, AlertInformation),
           alertInformation);
     });
 
@@ -196,12 +199,12 @@ void main() {
           .setFallBackValue(stringFallBack);
 
       print(
-          " my custome message ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(exception).message}");
+          " my custome message ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(exception, AlertInformation).message}");
 
       expect(
           exceptionMapper
               .throwableMapper<Exception, AlertInformation>()
-              .call(exception),
+              .call(exception, AlertInformation),
           alertInformation);
     });
 
@@ -233,12 +236,12 @@ void main() {
           .setFallBackValue(stringFallBack);
 
       print(
-          "expected result ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(flutterCustomException)}");
+          "expected result ${exceptionMapper.throwableMapper<Exception, AlertInformation>().call(flutterCustomException, AlertInformation)}");
 
       expect(
           exceptionMapper
               .throwableMapper<Exception, AlertInformation>()
-              .call(flutterCustomException),
+              .call(flutterCustomException, AlertInformation),
           alertInformation);
     });
 
@@ -276,7 +279,7 @@ void main() {
       expect(
           exceptionMapper
               .throwableMapper<Exception, String>()
-              .call(formatException),
+              .call(formatException, String),
           stringFallBack);
     });
   });
@@ -288,7 +291,8 @@ void main() {
     );
     print("object is String ${object.runtimeType == String}");
     print("object is int ${object.runtimeType == int}");
-    print("object is AlertInformation ${object.runtimeType == AlertInformation}");
+    print(
+        "object is AlertInformation ${object.runtimeType == AlertInformation}");
   });
 
   test('dynamic Checks', () {
@@ -296,10 +300,10 @@ void main() {
       title: '',
       message: '',
     );
-    print("object is String ${dynamo is String}");
-    print("object == String ${dynamo.runtimeType == String}");
-    print("object is String ${dynamo.runtimeType == int}");
-    print("object == String ${dynamo.runtimeType == AlertInformation}");
-    print("object is String ${dynamo is AlertInformation}");
+    print("dynamic is String ${dynamo is String}");
+    print("dynamic == String ${dynamo.runtimeType == String}");
+    print("dynamic is String ${dynamo.runtimeType == int}");
+    print("dynamic == String ${dynamo.runtimeType == AlertInformation}");
+    print("dynamic is String ${dynamo is AlertInformation}");
   });
 }
