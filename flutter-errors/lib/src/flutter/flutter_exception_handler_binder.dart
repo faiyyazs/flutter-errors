@@ -49,7 +49,7 @@ class EventsListener<T extends Object> implements ErrorEventListener<T> {
   }
 
   @override
-  FlutterErrorPresenter resolvePresenter(Exception throwable) {
-    return errorPresenter.resolvePresenter(throwable);
+  Type resolvePresenterType(Exception throwable) {
+    return errorPresenter.resolve(throwable).presenterType();
   }
 }

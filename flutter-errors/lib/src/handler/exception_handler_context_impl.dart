@@ -51,10 +51,8 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
       bool isHandled = _isHandledByCustomCatcher(e as Exception);
       if (!isHandled) {
         // If not handled by a custom catcher
-
         eventsDispatcher.dispatchEvent((listener) {
-          var data =
-              exceptionMapper(e, listener.resolvePresenter(e).resolveType());
+          var data = exceptionMapper(e, listener.resolvePresenterType(e)) as T;
           listener.showError(e, data);
         });
       }

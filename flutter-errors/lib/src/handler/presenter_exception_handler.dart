@@ -34,7 +34,7 @@ class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl<T>
   @override
   void showError<TC extends Object>(Exception throwable) {
     //TO-DO: Need to check this functionality
-    final errorValue = exceptionMapper(throwable, TC.runtimeType);
+    final errorValue = exceptionMapper(throwable, TC.runtimeType) as T;
     errorEventsDispatcher.dispatchEvent((listener) {
       listener.showError(throwable, errorValue);
     });
