@@ -10,9 +10,9 @@ import 'exception_mapper/exception_mapper.dart';
 
 class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl<T>
     implements ExceptionHandler {
-  final ExceptionMapper<T> exceptionMapper;
+  final ExceptionMapper exceptionMapper;
   void Function(Exception element)? onCatch;
-  final ErrorPresenter<T> errorPresenters;
+  final ErrorPresenter errorPresenters;
   final EventsDispatcher<ErrorEventListener<T>> errorEventsDispatcher;
 
   PresenterExceptionHandler(
@@ -32,8 +32,9 @@ class PresenterExceptionHandler<T> extends ExceptionHandlerBinderImpl<T>
   }
 
   @override
-  void showError(Exception throwable) {
-    final errorValue = exceptionMapper(throwable);
+  void showError<TC extends Object>(Exception throwable) {
+    //TO-DO: Need to check this functionality
+    final errorValue = exceptionMapper(throwable, TC.runtimeType) as T;
     errorEventsDispatcher.dispatchEvent((listener) {
       listener.showError(throwable, errorValue);
     });

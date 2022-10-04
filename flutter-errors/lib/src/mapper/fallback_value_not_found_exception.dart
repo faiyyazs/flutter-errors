@@ -6,5 +6,5 @@ class FallbackValueNotFoundException implements Exception {
   String? get message => "There is no fallback value for class [$clazz]";
 
   @override
-  String toString() => "FallbackValueNotFoundException";
+  String toString() => "FallbackValueNotFoundException $clazz";
 }

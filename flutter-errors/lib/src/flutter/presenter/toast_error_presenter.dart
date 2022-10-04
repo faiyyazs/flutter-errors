@@ -1,6 +1,6 @@
 import '../../../flutter_errors.dart';
 
-abstract class ToastErrorPresenter<T> implements FlutterErrorPresenter<T> {
+abstract class ToastErrorPresenter<T> extends FlutterErrorPresenter<T> {
   final ToastDuration duration;
 
   ToastErrorPresenter({this.duration = ToastDuration.short});

@@ -7,7 +7,7 @@ import 'dispatcher/flutter_events_dispatcher.dart';
 import 'observer/flutter_widget_binding_observer.dart';
 import 'presenter/flutter_error_presenter.dart';
 
-abstract class FlutterExceptionHandlerBinder<T>
+abstract class FlutterExceptionHandlerBinder<T extends Object>
     extends PresenterExceptionHandler<T> {
   FlutterExceptionHandlerBinder(super.exceptionMapper, super.errorPresenters,
       super.errorEventsDispatcher, super.onCatch);
@@ -15,18 +15,20 @@ abstract class FlutterExceptionHandlerBinder<T>
   void bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner);
 }
 
-class FlutterExceptionHandlerBinderImpl<T>
+class FlutterExceptionHandlerBinderImpl<T extends Object>
     extends FlutterExceptionHandlerBinder<T> {
-  final FlutterErrorPresenter<T> flutterErrorPresenter;
+  final FlutterErrorPresenter flutterErrorPresenter;
+  final ExceptionMapper exceptionMapperStorage;
   final FlutterEventsDispatcher<ErrorEventListener<T>> flutterEventsDispatcher;
 
-  FlutterExceptionHandlerBinderImpl(
-      ExceptionMapper<T> exceptionMapper,
-      this.flutterErrorPresenter,
-      this.flutterEventsDispatcher,
-      Function(Exception element)? onCatch)
-      : super(exceptionMapper, flutterErrorPresenter, flutterEventsDispatcher,
-            onCatch);
+  /// [onCatch] Here we can log all exceptions that are handled by ExceptionHandler
+  FlutterExceptionHandlerBinderImpl({
+    required this.exceptionMapperStorage,
+    required this.flutterErrorPresenter,
+    required this.flutterEventsDispatcher,
+    void Function(Exception element)? onCatch,
+  }) : super(exceptionMapperStorage, flutterErrorPresenter,
+            flutterEventsDispatcher, onCatch);
 
   @override
   bind(BuildContext context, FlutterWidgetBindingObserver lifecycleOwner) {
@@ -35,14 +37,19 @@ class FlutterExceptionHandlerBinderImpl<T>
   }
 }
 
-class EventsListener<T> implements ErrorEventListener<T> {
+class EventsListener<T extends Object> implements ErrorEventListener<T> {
   final BuildContext _context;
-  final FlutterErrorPresenter<T> errorPresenter;
+  final FlutterErrorPresenter errorPresenter;
 
   EventsListener(this._context, this.errorPresenter);
 
   @override
   void showError(Exception throwable, T data) {
     errorPresenter.show(throwable, _context, data);
+  }
+
+  @override
+  Type resolvePresenterType(Exception throwable) {
+    return errorPresenter.resolve(throwable).presenterType();
   }
 }

@@ -1,1 +1,1 @@
-typedef ExceptionMapper<T> = T Function(Exception exception);
+typedef ExceptionMapper = Function(Exception exception, Type runtimeType);
