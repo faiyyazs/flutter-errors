@@ -9,7 +9,7 @@ class FlutterAlertErrorPresenter<T extends AlertTexts> extends AlertErrorPresent
       context: context,
       useSafeArea: true,
       builder: (context) {
-        return Text("Alert Information ${data.title}");
+        return Text("Alert Information ${data.message}");
       },
     );
   }

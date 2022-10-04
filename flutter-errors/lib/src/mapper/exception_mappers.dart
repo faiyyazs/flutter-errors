@@ -14,7 +14,7 @@ class ExceptionMapperStorage {
 
   static ExceptionMapperStorage get instance => _instance;
 
-  final Map<dynamic, dynamic> _fallbackValuesMap = {
+  final Map<Object, Object> _fallbackValuesMap = {
     String: "Unknown Error",
   };
 
@@ -101,13 +101,14 @@ class ExceptionMapperStorage {
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMapperStorage _setFallbackValue<T>(dynamic clazz, T value) {
+  ExceptionMapperStorage _setFallbackValue<T extends Object>(
+      Object clazz, T value) {
     _fallbackValuesMap[clazz] = value;
     return this;
   }
 
   /// Sets fallback (default) value for [T] errors type.
-  ExceptionMapperStorage setFallBackValue<T>(T value) {
+  ExceptionMapperStorage setFallBackValue<T extends Object>(T value) {
     return _setFallbackValue<T>(T, value);
   }
 

@@ -18,8 +18,16 @@ class Splash extends StatefulWidget {
                   (e) => "Format Exception registered error")
               .register<NoNetworkException, String>(
                   (e) => "No internet connection")
+              .condition(
+                  (e) => e is NoNetworkException,
+                  (e) => AlertTexts(
+                      title: 'Title',
+                      message:
+                          'custom message ${e.mapThrowable<Exception, String>()}'))
               .setFallBackValue<AlertTexts>(
-                AlertTexts(title: "yo yo", message: "yo mesage"),
+                AlertTexts(
+                    title: "Alert Default Title",
+                    message: "Alert Default Subtitle"),
               )
               .throwableMapper(),
           flutterErrorPresenter: SelectorErrorPresenter((e) {
@@ -81,30 +89,64 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
         color: Colors.black26,
         alignment: Alignment.center,
         child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    test();
-                  },
-                  child: const Text("test normal"),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        test();
+                      },
+                      child: const Text("test normal"),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        testFuture();
+                      },
+                      child: const Text("test future"),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    testFuture();
-                  },
-                  child: const Text("test future"),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        testFinally();
+                      },
+                      child: const Text("test finally"),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        testCatch();
+                      },
+                      child: const Text("test catch"),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -113,6 +155,7 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     );
   }
 
+  //handling a future
   void testFuture() {
     exceptionHandler.handle<Future>(block: () async {
       await Future.delayed(
@@ -122,11 +165,13 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     }).execute();
   }
 
+  //handle normal block
   void test() {
     exceptionHandler.handle(block: () {
       throw const FormatException("Format Exception");
     }).execute();
   }
+
 
   void testFinally() {
     exceptionHandler.handle(block: () {
@@ -134,6 +179,7 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     }).finallyIt(block: () {
       // Optional finally block
       // Some code
+      print("You can handle it ur way ");
     }).execute();
   }
 

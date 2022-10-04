@@ -22,9 +22,9 @@ include: package:lints/recommended.yaml
 analyzer:
   exclude:
     - "**.sealed.dart"
-#  strong-mode:
-#    implicit-dynamic: false
-#    implicit-casts: false
+  strong-mode:
+    implicit-dynamic: false
+    implicit-casts: false
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints
 
