@@ -16,7 +16,7 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
     required this.block,
   });
 
-  final _catchers = <MapEntry<bool Function(Exception), Catcher>>[];
+  final List<MapEntry<bool Function(Exception e), Catcher>> _catchers = [];
   final ExceptionMapper exceptionMapper;
   void Function(Exception element)? onCatch;
   void Function()? finallyBlock;
@@ -25,10 +25,11 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
 
   @override
   ExceptionHandlerContext<R> condition<E extends Exception>({
-    required bool Function(Exception element) condition,
+    required bool Function(E element) condition,
     required bool Function(E element) catcher,
   }) {
-    _catchers.add(MapEntry(condition, catcher as Catcher));
+    _catchers.add(MapEntry(
+        condition as bool Function(Exception element), catcher as Catcher));
     return this;
   }
 
@@ -63,15 +64,12 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
   }
 
   bool _isHandledByCustomCatcher(Exception cause) {
-    /*return catchers
-        .firstOrNull { it.first.invoke(cause) } // Finds custom catcher by invoking conditions
-        ?.second?.invoke(cause) // If catcher was found then execute it
-    ?: false*/
-    var first = _catchers.firstOrNull;
-    first?.value.call(cause);
-    if (first != null) {
-      return _catchers.elementAt(1).value.call(cause);
-    }
-    return false;
+    return _catchers
+            .firstWhereOrNull((element) => element.key
+                .call(cause)) // Finds custom catcher by invoking conditions
+            ?.value
+            .call(cause) // If catcher was found then execute it
+        ??
+        false;
   }
 }

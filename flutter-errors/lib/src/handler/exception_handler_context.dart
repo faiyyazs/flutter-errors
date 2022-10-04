@@ -5,7 +5,7 @@ abstract class ExceptionHandlerContext<R> {
 
   ExceptionHandlerContext<R> condition<E extends Exception>({
     required bool Function(Exception element) condition,
-    required bool Function(E element) catcher,
+    required bool Function(Exception element) catcher,
   });
 
   ExceptionHandlerContext<R> finallyIt({
@@ -13,10 +13,10 @@ abstract class ExceptionHandlerContext<R> {
   });
 
   ExceptionHandlerContext<R> catchIt<E extends Exception>(
-      bool Function(E element) catcher) {
-    return condition(
+      bool Function(Exception element) catcher) {
+    return condition<E>(
         condition: (e) {
-          return false;
+          return e is E;
         },
         catcher: catcher);
   }

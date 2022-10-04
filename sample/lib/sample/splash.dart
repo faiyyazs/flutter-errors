@@ -172,7 +172,6 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
     }).execute();
   }
 
-
   void testFinally() {
     exceptionHandler.handle(block: () {
       // serverRequest(); // Some dangerous code that can throw an exception
@@ -185,11 +184,13 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
 
   void testCatch() {
     exceptionHandler.handle(block: () {
+      throw const FormatException();
       // serverRequest(); // Some dangerous code that can throw an exception
     }).catchIt<FormatException>((e) {
       // Optional finally block
       // Some code
-      return false;
+      print("You can handle it ur way ");
+      return true;
     }).execute();
   }
 }
