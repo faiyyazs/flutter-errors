@@ -1,0 +1,78 @@
+name: CD
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-artifact:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        Directory: [ flutter-errors ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: 'Install Tools'
+        run: |
+          ./.github/workflows/scripts/install-tools.sh
+
+      - name: 'Bootstrap Workspace'
+        run: melos bootstrap
+
+      - name: Get Dependencies
+        run: melos run get
+
+      - name: Run build_runner
+        run: melos run generate
+
+      - name: Bump Build Number
+        run: scripts/bump-build-number.sh
+        working-directory: flutter-errors/
+
+      - name: Add Tag Name to ENV
+        run: scripts/gh-action-read-and-set-version-env.sh
+        working-directory: flutter-errors/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.tag_name }}
+
+  commit-version-update:
+    name: Commit Version Change
+    runs-on: ubuntu-latest
+    needs: [ build-artifact ]
+    if: |
+      always() &&
+      (needs.build-artifact.result == 'success')
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump Version
+        run: scripts/bump-build-number.sh
+        working-directory: flutter-errors/
+
+      - name: Configure Git
+        run: |
+          git config user.name "Github Actions CD"
+          git config user.email "<>"
+      - name: Commit Version Change
+        run: scripts/commit-version.sh
+        working-directory: flutter-errors/
