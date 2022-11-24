@@ -42,14 +42,13 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
   @override
   Future<HandlerResult<R, Exception>> execute() async {
     try {
-      return HandlerResult.success(
-        data: (R == Future) ? await (block() as Future<R>) : block.call(),
-      );
-    } catch (e) {
-      // Don't handle coroutines CancellationException
+      // ignore: await_only_futures
+      return HandlerResult.success(data: await block.call());
+    } on Exception catch (e) {
       //if (e is CancellationException) throw e
-      onCatch?.call(e as Exception);
-      bool isHandled = _isHandledByCustomCatcher(e as Exception);
+      print("HERERE RIS SOLID $e ");
+      onCatch?.call(e);
+      bool isHandled = _isHandledByCustomCatcher(e);
       if (!isHandled) {
         // If not handled by a custom catcher
         eventsDispatcher.dispatchEvent((listener) {
