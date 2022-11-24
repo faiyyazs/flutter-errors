@@ -46,7 +46,6 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
       return HandlerResult.success(data: await block.call());
     } on Exception catch (e) {
       //if (e is CancellationException) throw e
-      print("HERERE RIS SOLID $e ");
       onCatch?.call(e);
       bool isHandled = _isHandledByCustomCatcher(e);
       if (!isHandled) {
