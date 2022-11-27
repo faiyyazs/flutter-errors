@@ -156,28 +156,38 @@ class SplashState extends State<Splash> with WidgetsBindingObserver {
   }
 
   //handling a future
-  void testFuture() {
-    exceptionHandler.handle(block: ()  async {
-      await testMethod();
+  Future<void> testFuture() async {
+    exceptionHandler.handle(block: () async {
+      await testMethod()
+          .then(
+        (value) => throw Exception("asdasd"),
+      );
+      // await testMethod();
+    }).execute();
+  }
+
+  void testStream() {
+    exceptionHandler.handle(block: () async {
+      testMethod().then((value) => null);
     }).execute();
   }
 
   Future testMethod() async {
     await Future.delayed(
       const Duration(seconds: 2),
-          () => throw NoNetworkException("No internet"),
+      () => throw NoNetworkException("No internet"),
     );
   }
 
   //handle normal block
   void test() {
-    exceptionHandler.handle(block: () {
+    exceptionHandler.handle(block: () async {
       throw const FormatException("Format Exception");
     }).execute();
   }
 
   void testFinally() {
-    exceptionHandler.handle(block: () {
+    exceptionHandler.handle(block: () async {
       // serverRequest(); // Some dangerous code that can throw an exception
     }).finallyIt(block: () {
       // Optional finally block
