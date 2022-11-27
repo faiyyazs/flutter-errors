@@ -44,18 +44,26 @@ class ExceptionHandlerContextImpl<T, R> extends ExceptionHandlerContext<R> {
     try {
       // ignore: await_only_futures
       return HandlerResult.success(data: await block.call());
-    } on Exception catch (e) {
+    } catch (e) {
+      Exception error;
       //if (e is CancellationException) throw e
-      onCatch?.call(e);
-      bool isHandled = _isHandledByCustomCatcher(e);
+      if (e is! Exception) {
+        error = Exception("Unknown Exception $e");
+      } else {
+        error = e;
+      }
+
+      onCatch?.call(error);
+      bool isHandled = _isHandledByCustomCatcher(error);
       if (!isHandled) {
         // If not handled by a custom catcher
         eventsDispatcher.dispatchEvent((listener) {
-          var data = exceptionMapper(e, listener.resolvePresenterType(e)) as T;
-          listener.showError(e, data);
+          var data =
+              exceptionMapper(error, listener.resolvePresenterType(error)) as T;
+          listener.showError(error, data);
         });
       }
-      return HandlerResult.error(exception: e);
+      return HandlerResult.error(exception: error);
     } finally {
       finallyBlock?.call();
     }
